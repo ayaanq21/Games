@@ -1,10 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <meta charset="UTF-8" />
   <title>Memory Flip Game - Levels</title>
   <style>
     body {
+      
+  background: linear-gradient(135deg, #6b73ff, #000dff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+
+
+.game-container {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+  width: 320px;
+  text-align: center;
+}
+
       font-family: Arial, sans-serif;
       text-align: center;
       background: #f0f0f0;
@@ -38,6 +60,15 @@
       color: #000;
       cursor: default;
     }
+    .fade-in {
+  animation: fadeIn 0.7s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
     #info {
       font-size: 18px;
       margin-top: 15px;
@@ -52,6 +83,23 @@
       background: #007bff;
       color: white;
     }
+      button {
+  background: #4caf50;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px 5px;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+    
   </style>
 </head>
 <body>
