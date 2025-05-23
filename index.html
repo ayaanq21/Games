@@ -1,325 +1,178 @@
 <!-- FULL UPDATED CODE WITH LEADERBOARD BELOW -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Memory Game with Login & Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Card Flip Game</title>
   <style>
-    * { box-sizing: border-box; }
     body {
+      font-family: sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      background: white;
+      color: #333;
+    }
+    .header {
+      background: linear-gradient(to right, #3b82f6, #60a5fa);
+      padding: 1rem;
       color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    h1 { font-size: 2.5rem; margin: 10px; text-shadow: 1px 1px 5px #000; }
-    .screen { display: none; width: 100%; max-width: 500px; }
-    .screen.active { display: block; }
-
-    .login-box {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-    }
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-    .login-box button {
-      padding: 10px 20px;
-      border: none;
-      background: #4CAF50;
-      color: white;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .scoreboard {
-      font-size: 1.1rem;
-      margin-bottom: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 10px 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .game-board {
-      display: grid;
-      gap: 12px;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-    }
-
-    .card {
-      width: 80px;
-      height: 100px;
-      background: #ffffff;
-      color: #1e3c72;
-      border-radius: 10px;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-      user-select: none;
-    }
-
-    .card.flipped {
-      background: #1e3c72;
-      color: #ffffff;
-    }
-
-    .card.matched {
-      background: #28a745;
-      color: white;
-      cursor: default;
-      box-shadow: none;
-    }
-
-    .logout {
-      margin-top: 20px;
-      background: #dc3545;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .leaderboard {
-      margin-top: 30px;
-      width: 100%;
-      max-width: 400px;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    }
-
-    .leaderboard h3 {
-      margin-top: 0;
-      text-align: center;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
-
-    .leaderboard ul {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    .leaderboard li {
-      padding: 6px 10px;
-      margin: 4px 0;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .card {
+      width: 100%;
+      padding-top: 100%;
+      background: #3b82f6;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card-content {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      color: white;
+    }
+    .hidden { visibility: hidden; }
+    .login-container, .leaderboard {
+      max-width: 300px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f9f9f9;
     }
   </style>
 </head>
 <body>
-
-  <h1>🧠 Memory Game</h1>
-
-  <!-- Login Screen -->
-  <div id="login-screen" class="screen active">
-    <div class="login-box">
-      <h2>Login</h2>
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-      <button onclick="login()">Login</button>
+  <div class="header">
+    <div>
+      <span id="user-info"></span>
+    </div>
+    <div>
+      <strong>Level: <span id="level">1</span></strong>
+      <strong>Flips: <span id="flips">0</span></strong>
     </div>
   </div>
 
-  <!-- Game Screen -->
-  <div id="game-screen" class="screen">
-    <div class="scoreboard">
-      User: <span id="user-label"></span> |
-      Level: <span id="level">1</span> |
-      Flips: <span id="flips">0</span>
-    </div>
-    <div id="game" class="game-board"></div>
-    <button class="logout" onclick="logout()">Logout</button>
+  <div class="login-container" id="login-form">
+    <h3>Login</h3>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p id="login-status"></p>
+  </div>
 
-    <div class="leaderboard">
-      <h3>🏆 Leaderboard</h3>
-      <ul id="leaderboard-list"></ul>
-    </div>
+  <div class="game-board" id="game-board" style="display: none;"></div>
+
+  <div class="leaderboard">
+    <h3>Leaderboard</h3>
+    <ul id="leaderboard-list"></ul>
   </div>
 
   <script>
-    const emojis = ['🐶','🐱','🦊','🐻','🐼','🐨','🐯','🦁','🐸','🐵','🐙','🦄','🐷','🐧','🐔','🐝','🦋','🐞','🦖','🐢'];
-
-    let user = null;
     let level = 1;
-    let flipCount = 0;
-    let flippedCards = [];
-    let matchedPairs = 0;
+    let flips = 0;
+    let user = null;
 
-    const gameBoard = document.getElementById('game');
-    const flipsDisplay = document.getElementById('flips');
-    const levelDisplay = document.getElementById('level');
-    const userLabel = document.getElementById('user-label');
-    const leaderboardList = document.getElementById('leaderboard-list');
+    const emojis = ['😀','🐶','🍕','🚗','🌈','⚽','🎵','📚'];
 
-    function login() {
-      const username = document.getElementById('username').value.trim();
+    async function login() {
+      const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-
-      if (!username || !password) {
-        alert("Please enter username and password.");
-        return;
-      }
-
-      const saved = JSON.parse(localStorage.getItem("users") || "{}");
-
-      if (saved[username]) {
-        if (saved[username].password !== password) {
-          alert("Incorrect password.");
-          return;
-        }
+      const res = await fetch('https://memorygame-backend.yourdomain.com/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        user = data.user;
+        document.getElementById('user-info').innerText = `Welcome, ${user.username}`;
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('game-board').style.display = 'grid';
+        level = user.level;
+        flips = user.flips;
+        document.getElementById('level').innerText = level;
+        document.getElementById('flips').innerText = flips;
+        renderBoard();
+        loadLeaderboard();
       } else {
-        saved[username] = { password, level: 1, flips: 0 };
-        localStorage.setItem("users", JSON.stringify(saved));
+        document.getElementById('login-status').innerText = data.message;
       }
-
-      user = username;
-      level = saved[username].level;
-      flipCount = saved[username].flips;
-
-      document.getElementById("login-screen").classList.remove("active");
-      document.getElementById("game-screen").classList.add("active");
-
-      userLabel.textContent = user;
-      updateLeaderboard();
-      startLevel();
     }
 
-    function logout() {
-      user = null;
-      document.getElementById("login-screen").classList.add("active");
-      document.getElementById("game-screen").classList.remove("active");
-    }
-
-    function saveProgress() {
-      const saved = JSON.parse(localStorage.getItem("users") || "{}");
-      saved[user].level = level;
-      saved[user].flips = flipCount;
-      localStorage.setItem("users", JSON.stringify(saved));
-      updateLeaderboard();
-    }
-
-    function startLevel() {
-      gameBoard.innerHTML = '';
-      flippedCards = [];
-      matchedPairs = 0;
-      flipsDisplay.textContent = flipCount;
-      levelDisplay.textContent = level;
-
-      let cardCount = 8 + (level - 1) * 3;
-      if (cardCount % 2 !== 0) cardCount++;
-
-      const pairs = cardCount / 2;
-      const levelEmojis = shuffle(emojis).slice(0, pairs);
-      const cardValues = shuffle([...levelEmojis, ...levelEmojis]);
-
-      const columns = Math.min(6, Math.ceil(Math.sqrt(cardCount)));
-      gameBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-
-      cardValues.forEach((emoji, index) => {
+    function renderBoard() {
+      const board = document.getElementById('game-board');
+      board.innerHTML = '';
+      const count = level + 2;
+      const emojiSet = [...emojis].slice(0, (count * count) / 2);
+      const cards = shuffle([...emojiSet, ...emojiSet]);
+      cards.forEach(emoji => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.dataset.index = index;
-        card.dataset.emoji = emoji;
-        card.textContent = '';
-        card.addEventListener('click', () => flipCard(card));
-        gameBoard.appendChild(card);
-      });
-    }
+        const content = document.createElement('div');
+        content.className = 'card-content hidden';
+        content.textContent = emoji;
+        card.appendChild(content);
+        board.appendChild(card);
 
-    function flipCard(card) {
-      if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
-        return;
-      }
-
-      card.classList.add('flipped');
-      card.textContent = card.dataset.emoji;
-      flippedCards.push(card);
-      flipCount++;
-      flipsDisplay.textContent = flipCount;
-      saveProgress();
-
-      if (flippedCards.length === 2) {
-        const [card1, card2] = flippedCards;
-        if (card1.dataset.emoji === card2.dataset.emoji) {
-          card1.classList.add('matched');
-          card2.classList.add('matched');
-          matchedPairs++;
-          flippedCards = [];
-
-          if (matchedPairs === parseInt(gameBoard.children.length / 2)) {
-            setTimeout(() => {
-              alert(`🎉 Level ${level} complete!`);
-              level++;
-              startLevel();
-              saveProgress();
-            }, 700);
+        card.addEventListener('click', () => {
+          if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            flips++;
+            document.getElementById('flips').innerText = flips;
+            saveProgress();
           }
-        } else {
-          setTimeout(() => {
-            card1.classList.remove('flipped');
-            card2.classList.remove('flipped');
-            card1.textContent = '';
-            card2.textContent = '';
-            flippedCards = [];
-          }, 800);
-        }
-      }
-    }
-
-    function updateLeaderboard() {
-      const saved = JSON.parse(localStorage.getItem("users") || "{}");
-      const players = Object.entries(saved).map(([name, data]) => ({
-        name, level: data.level || 0, flips: data.flips || 0
-      }));
-
-      players.sort((a, b) => b.level - a.level || a.flips - b.flips);
-
-      leaderboardList.innerHTML = "";
-      players.slice(0, 5).forEach(p => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${p.name}</strong> - Level ${p.level}, Flips: ${p.flips}`;
-        leaderboardList.appendChild(li);
+        });
       });
     }
 
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
+    async function saveProgress() {
+      if (!user) return;
+      await fetch('https://memorygame-backend.yourdomain.com/save-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user.username, level, flips })
+      });
+    }
+
+    async function loadLeaderboard() {
+      const res = await fetch('https://memorygame-backend.yourdomain.com/leaderboard');
+      const data = await res.json();
+      const list = document.getElementById('leaderboard-list');
+      list.innerHTML = '';
+      data.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.username} - Level ${entry.level} - Flips ${entry.flips}`;
+        list.appendChild(li);
+      });
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        [array[i], array[j]] = [array[j], array[i]];
       }
-      return arr;
+      return array;
     }
   </script>
 </body>
 </html>
-
-
